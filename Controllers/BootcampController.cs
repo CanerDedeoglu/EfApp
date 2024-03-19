@@ -4,31 +4,33 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EfApp.Controllers
 {
-    public class OgrenciController : Controller
+    public class BootcampController :Controller
     {
+
         private readonly DataContext _context;
 
-        public OgrenciController(DataContext context)
+        public BootcampController(DataContext context)
         {
             _context = context;
-        }
+        }   
 
-        public async Task<IActionResult> Index()
-        {
-            var ogrenciler = await _context.Ogrencis.ToListAsync();
-            return View(ogrenciler);
-        }
         public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Ogrenci model)
+        public async Task<IActionResult> Create(Bootcamp model)
         {
-            _context.Ogrencis.Add(model);
+            _context.Bootcamps.Add(model);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var bootcamps = await _context.Bootcamps.ToListAsync();
+            return View(bootcamps);
         }
 
         [HttpGet]
@@ -38,34 +40,34 @@ namespace EfApp.Controllers
             {
                 return NotFound();
             }
-            var ogr = await _context.Ogrencis.FindAsync(id);
-            if (ogr == null)
+            var bootcamp = await _context.Bootcamps.FindAsync(id);
+            if (bootcamp == null)
             {
                 return NotFound();
             }
 
-            return View(ogr);
+            return View(bootcamp);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Ogrenci model)
+        public async Task<IActionResult> Edit(int id, Bootcamp model)
         {
-            if (id != model.OgrenciId)
+            if (id != model.KursId)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                try
+               try
                 {
                     _context.Update(model);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_context.Ogrencis.Any(o => o.OgrenciId == model.OgrenciId))
+                    if (!_context.Bootcamps.Any(o => o.KursId == model.KursId))
                     {
                         return NotFound();
                     }
@@ -74,40 +76,40 @@ namespace EfApp.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index");
+                 return RedirectToAction("Index");
             }
-
             return View(model);
         }
-
-        [HttpGet]
+        
+          [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var ogr = await _context.Ogrencis.FindAsync(id);
-            if (ogr == null)
+            if(id == null)
             {
                 return NotFound();
             }
 
-            return View(ogr);
-        }
-        [HttpPost]
-        public async Task<IActionResult> Delete ([FromForm]int id)
-        {
-            var ogr = await _context.Ogrencis.FindAsync(id);
-            if (ogr == null)
+            var kurs = await _context.Bootcamps.FindAsync(id);
+
+            if(kurs == null)
             {
                 return NotFound();
             }
-            _context.Ogrencis.Remove(ogr);
+
+            return View(kurs);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete([FromForm]int id)
+        {
+            var kurs = await _context.Bootcamps.FindAsync(id);
+            if(kurs == null)
+            {
+                return NotFound();
+            }
+            _context.Bootcamps.Remove(kurs);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
-
     }
-
 }
