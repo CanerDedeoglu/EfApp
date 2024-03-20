@@ -37,6 +37,9 @@ namespace EfApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("BootcampKursId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("KayitTarihi")
                         .HasColumnType("TEXT");
 
@@ -47,6 +50,10 @@ namespace EfApp.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("KayıtId");
+
+                    b.HasIndex("BootcampKursId");
+
+                    b.HasIndex("OgrenciId");
 
                     b.ToTable("Kayitlar");
                 });
@@ -72,6 +79,25 @@ namespace EfApp.Migrations
                     b.HasKey("OgrenciId");
 
                     b.ToTable("Ogrencis");
+                });
+
+            modelBuilder.Entity("EfApp.Data.BootcampKayit", b =>
+                {
+                    b.HasOne("EfApp.Data.Bootcamp", "Bootcamp")
+                        .WithMany()
+                        .HasForeignKey("BootcampKursId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EfApp.Data.Ogrenci", "Ogrenci")
+                        .WithMany()
+                        .HasForeignKey("OgrenciId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bootcamp");
+
+                    b.Navigation("Ogrenci");
                 });
 #pragma warning restore 612, 618
         }
